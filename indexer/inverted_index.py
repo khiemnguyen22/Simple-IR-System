@@ -10,12 +10,14 @@ def load_corpus(json_file):
     f = open('../crawler/'+json_file)
     data = json.load(f)
     corpus = []
+    urls = []
     for obj in data:
         doc = obj['code'] + '\n title: '+obj['title'] +'\n credits: ' + obj['credits'] + '\n description: '+obj['description'] + '\n prerequisites: ' 
         for course in obj['prerequisites:']:
             doc += course +' '
         corpus.append(doc)
-    return corpus
+        urls.append(obj['link'])
+    return corpus, urls
 
 
 def tf_idf_index(corpus):
@@ -55,18 +57,26 @@ def cos_similarity(query_vector, tfidf_index, corpus):
 
     return sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
+# def saved_urls(urls, output_file):
+#     with open(output_file, "w") as f:
+#         for url in urls:
+#             f.write(url + "\n")
+#     f.close()
+#     print('saved urls to ', output_file)
+
 def to_pickle(index, output_file):
     with open(output_file, "wb") as file:
         pickle.dump(index, file)
     file.close()
-    print('saved to ', output_file)
+    print('saved index to ', output_file)
 
 def main(args):
-    corpus = load_corpus(args.json_file)
+    corpus, urls = load_corpus(args.json_file)
     N = len(corpus)
     index = tf_idf_index(corpus)
-    print(index)
+    # print(index)
     to_pickle(index, args.output_file)
+    # saved_urls(urls, 'urls.txt')
     return
 
 if __name__ == '__main__':

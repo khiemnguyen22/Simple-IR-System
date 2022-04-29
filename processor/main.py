@@ -1,5 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request
-  
+from query_processor import *
+import sys
+sys.path.append('../')
+from indexer.inverted_index import *
+
 app = Flask(__name__)
   
 @app.route("/")
@@ -17,7 +21,19 @@ def search():
 
 @app.route("/result/<search>")
 def result(search):
-    return 'search results ' + search
+    index = load_index('../indexer/cs_courses.pickle')
+    corpus, urls = load_corpus('cs_courses.json')
+    results = ''
+    K = 10
+
+    query = spelling_correction(search)[:-1]
+    query = modify_query(query, get_vocab(index))[:-1]
+    vector = query_to_vector(query, index, len(corpus))
+    matches = cos_similarity(vector, index, corpus)
+    for i in range(K):
+        results += urls[matches[i][0]] + '\n'
+    
+    return render_template('results.html', **locals())
 
   
 

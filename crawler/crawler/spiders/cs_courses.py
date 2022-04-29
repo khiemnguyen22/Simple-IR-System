@@ -6,7 +6,7 @@ class QuotesSpider(scrapy.Spider):
     name = "crawl_cs"
 
     def start_requests(self):
-        urls = ['http://bulletin.iit.edu/search/?P=CS%20'+str(x) for x in range(100, 500)]
+        urls = ['http://bulletin.iit.edu/search/?P=CS%20'+str(x) for x in range(100, 700)]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
