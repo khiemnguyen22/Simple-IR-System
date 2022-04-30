@@ -22,14 +22,16 @@ def search():
 @app.route("/result/<search>")
 def result(search):
     index = load_index('../indexer/cs_courses.pickle')
-    corpus, urls = load_corpus('cs_courses.json')
+    corpus, urls = load_corpus_file('../indexer/corpus.txt'), load_urls('../indexer/urls.txt')
     results = ''
     K = 10
 
-    query = spelling_correction(search)[:-1]
-    query = modify_query(query, get_vocab(index))[:-1]
+    # search = spelling_correction(search)[:-1]
+    query = modify_query(search, get_vocab(index))[:-1]
     vector = query_to_vector(query, index, len(corpus))
     matches = cos_similarity(vector, index, corpus)
+    print(query)
+    print(matches[:K])
     for i in range(K):
         results += urls[matches[i][0]] + '\n'
     

@@ -12,10 +12,15 @@ def load_index(pickle_file):
         dict = pickle.load(f)
     return dict
 
-# def load_urls(url_file):
-#     with open(url_file, 'r') as f:
-#         lines = f.readlines()
-#     return lines
+def load_corpus_file(corpus_file):
+    with open(corpus_file, 'r') as f:
+        lines = f.readlines()
+    return lines
+    
+def load_urls(url_file):
+    with open(url_file, 'r') as f:
+        lines = f.readlines()
+    return lines
 
 def get_vocab(index):
     return [term for term in index.keys()]
